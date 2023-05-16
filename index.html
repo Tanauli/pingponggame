@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    #container {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      margin: 0 auto;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      overflow: hidden;
+    }
+
+    #paddleA, #paddleB {
+      position: absolute;
+      width: 10px;
+      height: 60px;
+      background-color: #000;
+    }
+
+    #paddleA {
+      left: 0;
+    }
+
+    #paddleB {
+      right: 0;
+    }
+
+    #ball {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="paddleA"></div>
+    <div id="paddleB"></div>
+    <div id="ball"></div>
+  </div>
+
+  <script>
+    const container = document.getElementById("container");
+    const paddleA = document.getElementById("paddleA");
+    const paddleB = document.getElementById("paddleB");
+    const ball = document.getElementById("ball");
+
+    const containerWidth = parseInt(getComputedStyle(container).getPropertyValue("width"));
+    const containerHeight = parseInt(getComputedStyle(container).getPropertyValue("height"));
+    const paddleHeight = parseInt(getComputedStyle(paddleA).getPropertyValue("height"));
+    const paddleSpeed = 5;
+    let paddleAY = 0;
+    let paddleBY = 0;
+    let ballX = 0;
+    let ballY = 0;
+    let ballSpeedX = 2;
+    let ballSpeedY = 2;
+
+    function update() {
+      // Move paddles
+      paddleAY += paddleSpeed;
+      paddleBY += paddleSpeed;
+
+      // Move ball
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      // Check collision with paddles
+      if (
+        ballX <= 10 &&
+        ballY + 10 >= paddleAY &&
+        ballY <= paddleAY + paddleHeight
+      ) {
+        ballSpeedX = -ballSpeedX;
+      } else if (
+        ballX >= containerWidth - 20 &&
+        ballY + 10 >= paddleBY &&
+        ballY <= paddleBY + paddleHeight
+      ) {
+        ballSpeedX = -ballSpeedX;
+      }
+
+      // Check collision with walls
+      if (ballY <= 0 || ballY >= containerHeight - 10) {
+        ballSpeedY = -ballSpeedY;
+      }
+
+      // Update positions
+      paddleA.style.transform = `translateY(${paddleAY}px)`;
+      paddleB.style.transform = `translateY(${paddleBY}px)`;
+      ball.style.transform = `translate(${ballX}px, ${ballY}px)`;
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+</body>
+</html>
